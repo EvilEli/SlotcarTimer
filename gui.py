@@ -35,6 +35,8 @@ class MyDialog(QtGui.QDialog):
         self.jump_start_0 = False
         self.jump_start_1 = False
 
+        self.lap_no_0 = 0
+        self.lap_no_1 = 0
         self.best_lap_0 = 999.999
         self.best_lap_1 = 999.999
         self.average_0 = 0.000
@@ -149,34 +151,34 @@ class MyDialog(QtGui.QDialog):
 
     def play_start_sequence(self):
         pygame.mixer.init(32000)
-        pygame.mixer.music.load("./sound/intro_" + random.randint(1,5) + ".mp3")
+        pygame.mixer.music.load("./sound/intro_" + str(random.randint(1,6)) + ".mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
                 continue
 
     def play_overall_best_0(self):
-        pygame.mixer.init(32000)
-        pygame.mixer.music.load("./sound/Dave_laprecord_" + random.randint(1,2) + ".mp3")
+        #pygame.mixer.init(32000)
+        pygame.mixer.music.load("./sound/Dave_laprecord_" + str(random.randint(1,2)) + ".mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
                 continue
 
     def play_overall_best_1(self):
-        pygame.mixer.init(32000)
-        pygame.mixer.music.load("./sound/Julie_laprecord_" + random.randint(1,2) + ".mp3")
+        #pygame.mixer.init(32000)
+        pygame.mixer.music.load("./sound/Julie_laprecord_" + str(random.randint(1,2)) + ".mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
                 continue
     
     def play_personal_best_0(self):
-        pygame.mixer.init(32000)
+        #pygame.mixer.init(32000)
         pygame.mixer.music.load("./sound/Dave_personalbest.mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
                 continue
 
     def play_personal_best_1(self):
-        pygame.mixer.init(32000)
+        #pygame.mixer.init(32000)
         pygame.mixer.music.load("./sound/Julie_personalbest.mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
@@ -204,41 +206,41 @@ class MyDialog(QtGui.QDialog):
         return
 
     def play_seconds_0(self, seconds):
-        pygame.mixer.init(32000)
+        #pygame.mixer.init(32000)
         pygame.mixer.music.load("./sound/d_sec_" + str(seconds) + ".mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
                 continue
     
     def play_seconds_1(self, seconds):
-        pygame.mixer.init(32000)
+        #pygame.mixer.init(32000)
         pygame.mixer.music.load("./sound/j_sec_" + str(seconds) + ".mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
                 continue
 
     def play_mseconds_0(self, mseconds):
-        pygame.mixer.init(32000)
+        #pygame.mixer.init(32000)
         pygame.mixer.music.load("./sound/d_msec_" + str(int(mseconds*10)) + ".mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
                 continue
     def play_mseconds_1(self, mseconds):
-        pygame.mixer.init(32000)
+        #pygame.mixer.init(32000)
         pygame.mixer.music.load("./sound/j_msec_" + str(int(mseconds*10)) + ".mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
                 continue
 
     def play_win_0(self):
-        pygame.mixer.init(32000)
+        #pygame.mixer.init(32000)
         pygame.mixer.music.load("./sound/Dave_win_" + str(random.randint(1,5)) + ".mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:
                 continue
 
     def play_win_1(self):
-        pygame.mixer.init(32000)
+        #pygame.mixer.init(32000)
         pygame.mixer.music.load("./sound/Julie_win_" + str(random.randint(1,5)) + ".mp3")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy() == True:

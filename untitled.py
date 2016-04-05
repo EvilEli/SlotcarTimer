@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Mon Apr  4 02:05:58 2016
+# Created: Mon Apr  4 22:23:34 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,7 +30,7 @@ class Ui_SlotcarTimer(object):
         SlotcarTimer.setStyleSheet(_fromUtf8("background-color: rgb(65, 65, 65);"))
         self.pushButton = QtGui.QPushButton(SlotcarTimer)
         self.pushButton.setGeometry(QtCore.QRect(1100, 230, 85, 27))
-        self.pushButton.setStyleSheet(_fromUtf8("background-color: rgb(205, 172, 105);"))
+        self.pushButton.setStyleSheet(_fromUtf8("background-color: rgb(255, 141, 1);"))
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.listWidget = QtGui.QListWidget(SlotcarTimer)
         self.listWidget.setGeometry(QtCore.QRect(120, 110, 411, 271))
@@ -41,12 +41,12 @@ class Ui_SlotcarTimer(object):
         self.label_2 = QtGui.QLabel(SlotcarTimer)
         self.label_2.setGeometry(QtCore.QRect(600, 60, 171, 41))
         self.label_2.setStyleSheet(_fromUtf8("font: 63 28pt \"URW Gothic L\";\n"
-"color: rgb(255, 160, 43);"))
+"color: rgb(255, 141, 1);"))
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.label_3 = QtGui.QLabel(SlotcarTimer)
         self.label_3.setGeometry(QtCore.QRect(120, 60, 171, 41))
         self.label_3.setStyleSheet(_fromUtf8("font: 63 28pt \"URW Gothic L\";\n"
-"color: rgb(255, 160, 43);"))
+"color: rgb(255, 141, 1);"))
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.graphicsView = PlotWidget(SlotcarTimer)
         self.graphicsView.setGeometry(QtCore.QRect(120, 400, 411, 291))
@@ -62,6 +62,8 @@ class Ui_SlotcarTimer(object):
         self.label.setObjectName(_fromUtf8("label"))
         self.progressBar = QtGui.QProgressBar(SlotcarTimer)
         self.progressBar.setGeometry(QtCore.QRect(190, 710, 281, 23))
+        self.progressBar.setStyleSheet(_fromUtf8("color: rgb(255, 141, 1);\n"
+""))
         self.progressBar.setProperty("value", 24)
         self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.label_4 = QtGui.QLabel(SlotcarTimer)
@@ -113,6 +115,7 @@ class Ui_SlotcarTimer(object):
         self.graphicsView_2.setObjectName(_fromUtf8("graphicsView_2"))
         self.progressBar_2 = QtGui.QProgressBar(SlotcarTimer)
         self.progressBar_2.setGeometry(QtCore.QRect(660, 710, 281, 23))
+        self.progressBar_2.setStyleSheet(_fromUtf8("color: rgb(255, 141, 1);"))
         self.progressBar_2.setProperty("value", 24)
         self.progressBar_2.setObjectName(_fromUtf8("progressBar_2"))
         self.label_12 = QtGui.QLabel(SlotcarTimer)
@@ -189,8 +192,18 @@ class Ui_SlotcarTimer(object):
         self.label_23.setObjectName(_fromUtf8("label_23"))
         self.pushButton_2 = QtGui.QPushButton(SlotcarTimer)
         self.pushButton_2.setGeometry(QtCore.QRect(1100, 270, 85, 27))
-        self.pushButton_2.setStyleSheet(_fromUtf8("background-color: rgb(205, 172, 105);"))
+        self.pushButton_2.setStyleSheet(_fromUtf8("background-color: rgb(255, 141, 1);"))
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
+        self.label_24 = QtGui.QLabel(SlotcarTimer)
+        self.label_24.setGeometry(QtCore.QRect(950, 20, 301, 71))
+        self.label_24.setStyleSheet(_fromUtf8("font: 48pt \"Imagination Station\";\n"
+"color: rgb(255, 141, 1);"))
+        self.label_24.setObjectName(_fromUtf8("label_24"))
+        self.label_25 = QtGui.QLabel(SlotcarTimer)
+        self.label_25.setGeometry(QtCore.QRect(1080, 100, 181, 21))
+        self.label_25.setStyleSheet(_fromUtf8("font: 10pt \"Noto Sans [unknown]\";\n"
+"color: rgb(255, 141, 1);"))
+        self.label_25.setObjectName(_fromUtf8("label_25"))
 
         self.retranslateUi(SlotcarTimer)
         QtCore.QMetaObject.connectSlotsByName(SlotcarTimer)
@@ -223,5 +236,7 @@ class Ui_SlotcarTimer(object):
         self.label_22.setText(_translate("SlotcarTimer", "X.XXX", None))
         self.label_23.setText(_translate("SlotcarTimer", "X.XXX", None))
         self.pushButton_2.setText(_translate("SlotcarTimer", "Reset", None))
+        self.label_24.setText(_translate("SlotcarTimer", "SlotFighter", None))
+        self.label_25.setText(_translate("SlotcarTimer", "recommended by IkerPaco", None))
 
 from pyqtgraph import PlotWidget
