@@ -22,7 +22,7 @@ class MyDialog(QtGui.QDialog):
             exit(1)
         # Set up the Start Button
         self.ui.pushButton.clicked.connect(self.StartButton)
-        self.ui.pushButton_2.clicked.connect(self.ResetButton)
+        self.ui.pushButton_2.clicked.connect(self.ContinueButton)
        
         self.num_of_laps = 0
         self.new_time_0_avail = False
@@ -35,16 +35,7 @@ class MyDialog(QtGui.QDialog):
         self.jump_start_0 = False
         self.jump_start_1 = False
 
-        self.lap_no_0 = 0
-        self.lap_no_1 = 0
-        self.best_lap_0 = 999.999
-        self.best_lap_1 = 999.999
-        self.average_0 = 0.000
-        self.average_1 = 0.000
-        self.average_of_5_0 = 0.000
-        self.average_of_5_1 = 0.000
-        self.best_average_of_5_0 = 999.999
-        self.best_average_of_5_1 = 999.999
+        self.track_swapped = False
 
         thread = threading.Thread(target=self.read_serial_data)
         thread.daemon = True
@@ -58,14 +49,37 @@ class MyDialog(QtGui.QDialog):
         
         self.num_of_laps = int(self.ui.lineEdit.text())
         self.ser.write("S")
+        
+        # Reset variables
+        self.lap_no_0 = 0
+        self.lap_no_1 = 0
+        self.best_lap_0 = 999.999
+        self.best_lap_1 = 999.999
+        self.average_0 = 0.000
+        self.average_1 = 0.000
+        self.average_of_5_0 = 0.000
+        self.average_of_5_1 = 0.000
+        self.best_average_of_5_0 = 999.999
+        self.best_average_of_5_1 = 999.999
+        self.total_track1_0 = 999.999
+        self.total_track2_0 = 999.999
+        self.total_track1_1 = 999.999
+        self.total_track2_1 = 999.999
+        
+        self.jump_start_0 = False
+        self.jump_start_1 = False
+        
         sound_thread = threading.Thread(target=self.play_start_sequence)
         sound_thread.daemon = True
         sound_thread.start()
 
 
-    def ResetButton(self):
-        self.close()
-        subprocess.call("python" + " gui.py", shell=True)
+    def ContinueButton(self):
+        self.ser.write("S")
+        
+        sound_thread = threading.Thread(target=self.play_start_sequence)
+        sound_thread.daemon = True
+        sound_thread.start()
     
     def update_plot(self):
         # Handle the JUMPED START
@@ -74,12 +88,13 @@ class MyDialog(QtGui.QDialog):
         if (self.jump_start_1):
             self.ui.listWidget_2.addItem("JUMP START P2")
         # Process new time for player 0
-        if (self.new_time_0_avail):
+        if (self.new_time_0_avail and (self.lap_no_0 <= self.num_of_laps or (not self.ui.checkBox.isChecked()))):
             if (self.lap_no_0 > 0):
                 # Handle new improvment
                 if (self.last_time_0 < self.best_lap_0):
                     self.best_lap_0 = self.last_time_0
                     self.ui.label_5.setText(str(self.best_lap_0))
+                    self.ui.label_38.setText(str(3.6*12.6 / self.best_lap_0) + " km/h")
                     sound_thread = threading.Thread(target=self.play_sound_0, args=(self.best_lap_0,))
                     sound_thread.daemon = True
                     sound_thread.start()
@@ -98,26 +113,44 @@ class MyDialog(QtGui.QDialog):
             
             # Handle end of race
             if (self.lap_no_0 == self.num_of_laps):
-                self.ui.label_22.setText(str(np.sum(self.time_list_0_y)))
-                if (self.lap_no_1 < self.lap_no_0):
-                    sound_thread = threading.Thread(target=self.play_win_0)
-                    sound_thread.daemon = True
-                    sound_thread.start()
+                if (not self.track_swapped):
+                    self.total_track1_0 = np.sum(self.time_list_0_y)
+                    self.ui.label_22.setText(str(self.total_track1_0))
+                    if (self.lap_no_1 < self.lap_no_0):
+                        sound_thread = threading.Thread(target=self.play_win_0)
+                        sound_thread.daemon = True
+                        sound_thread.start()
+                    elif (self.ui.checkBox.isChecked()):
+                        self.track_swapped = True
+                        self.ui.label_36.setText("Track 1: P2")
+                        self.ui.label_37.setText("Track 2: P1")
+                elif (self.track_swapped):
+                    self.total_track2_0 = np.sum(self.time_list_0_y) - self.total_track1_0
+                    self.ui.label_28.setText(str(self.total_track2_0))
+                    self.ui.label_30.setText(str(self.total_track1_0 + self.total_track2_0))
+                    if (self.lap_no_1 < self.lap_no_0):
+                        sound_thread = threading.Thread(target=self.play_win_0)
+                        sound_thread.daemon = True
+                        sound_thread.start()
 
             # Update list and plot
             self.ui.listWidget.addItem("LAP" + str(self.lap_no_0) + "\t\t" + str(self.last_time_0))
             self.ui.listWidget.scrollToBottom()
-            self.ui.graphicsView.plot(self.time_list_0_x, self.time_list_0_y, pen=(1,3))
+            if not self.track_swapped:
+                self.ui.graphicsView.plot(self.time_list_0_x, self.time_list_0_y[0:], pen=(1,3))
+            if self.track_swapped:
+                self.ui.graphicsView.plot(self.time_list_0_x[self.num_of_laps+1:], self.time_list_0_y[self.num_of_laps+1:], pen=(2,3))
             self.ui.progressBar.setValue(100*self.lap_no_0/self.num_of_laps)
             self.new_time_0_avail = False
         
         # Process new time for player 1
-        if (self.new_time_1_avail):
+        if (self.new_time_1_avail and (self.lap_no_1 <= self.num_of_laps or (not self.ui.checkBox.isChecked()))):
             if (self.lap_no_1 > 0):
                 # Handle new improvement
                 if (self.last_time_1 < self.best_lap_1):
                     self.best_lap_1 = self.last_time_1
                     self.ui.label_14.setText(str(self.best_lap_1))
+                    self.ui.label_39.setText(str(3.6*12.6 / self.best_lap_1) + " km/h")
                     sound_thread = threading.Thread(target=self.play_sound_1, args=(self.best_lap_1,))
                     sound_thread.daemon = True
                     sound_thread.start()
@@ -136,16 +169,33 @@ class MyDialog(QtGui.QDialog):
 
             # Handle end of race
             if (self.lap_no_1 == self.num_of_laps):
-                self.ui.label_23.setText(str(np.sum(self.time_list_1_y)))
-                if (self.lap_no_0 < self.lap_no_1):
-                    sound_thread = threading.Thread(target=self.play_win_1)
-                    sound_thread.daemon = True
-                    sound_thread.start()
+                if (not self.track_swapped):
+                    self.total_track2_1 = np.sum(self.time_list_1_y)
+                    self.ui.label_32.setText(str(self.total_track2_1))
+                    if (self.lap_no_0 < self.lap_no_1):
+                        sound_thread = threading.Thread(target=self.play_win_1)
+                        sound_thread.daemon = True
+                        sound_thread.start()
+                    elif (self.ui.checkBox.isChecked()):
+                        self.track_swapped = True
+                        self.ui.label_36.setText("Track 1: P2")
+                        self.ui.label_37.setText("Track 2: P1")
+                elif (self.track_swapped):
+                    self.total_track1_1 = np.sum(self.time_list_1_y) - self.total_track2_1 
+                    self.ui.label_23.setText(str(self.total_track1_1))
+                    self.ui.label_31.setText(str(self.total_track1_1 + self.total_track2_1))
+                    if (self.lap_no_0 < self.lap_no_1):
+                        sound_thread = threading.Thread(target=self.play_win_1)
+                        sound_thread.daemon = True
+                        sound_thread.start()
 
             # Update list and plot
             self.ui.listWidget_2.addItem("LAP" + str(self.lap_no_1) + "\t\t" + str(self.last_time_1))
             self.ui.listWidget_2.scrollToBottom()
-            self.ui.graphicsView_2.plot(self.time_list_1_x, self.time_list_1_y, pen=(1,3))
+            if not self.track_swapped:
+                self.ui.graphicsView_2.plot(self.time_list_1_x, self.time_list_1_y, pen=(2,3))
+            if self.track_swapped:
+                self.ui.graphicsView_2.plot(self.time_list_1_x[self.num_of_laps+1:], self.time_list_1_y[self.num_of_laps +1:], pen=(1,3))
             self.ui.progressBar_2.setValue(100*self.lap_no_1/self.num_of_laps)
             self.new_time_1_avail = False
 
@@ -268,13 +318,23 @@ class MyDialog(QtGui.QDialog):
                     lap_msec = input_line[2]
                     lap_no = input_line[3]
                     if (player == "S0"):
-                        self.last_time_0 = float(lap_sec + "." + lap_msec)
-                        self.lap_no_0 = int(lap_no)
-                        self.new_time_0_avail = True
+                        if (self.track_swapped):
+                            self.last_time_1 = float(lap_sec + "." + lap_msec)
+                            self.lap_no_1 = int(lap_no)
+                            self.new_time_1_avail = True
+                        else:
+                            self.last_time_0 = float(lap_sec + "." + lap_msec)
+                            self.lap_no_0 = int(lap_no)
+                            self.new_time_0_avail = True
                     if (player == "S1"):
-                        self.last_time_1 = float(lap_sec + "." + lap_msec)
-                        self.lap_no_1 = int(lap_no)
-                        self.new_time_1_avail = True
+                        if (self.track_swapped):
+                            self.last_time_0 = float(lap_sec + "." + lap_msec)
+                            self.lap_no_0 = int(lap_no)
+                            self.new_time_0_avail = True
+                        else:
+                            self.last_time_1 = float(lap_sec + "." + lap_msec)
+                            self.lap_no_1 = int(lap_no)
+                            self.new_time_1_avail = True
                     
                     print input_line
                 except:
