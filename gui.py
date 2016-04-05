@@ -139,7 +139,10 @@ class MyDialog(QtGui.QDialog):
             if not self.track_swapped:
                 self.ui.graphicsView.plot(self.time_list_0_x, self.time_list_0_y[0:], pen=(1,3))
             if self.track_swapped:
-                self.ui.graphicsView.plot(self.time_list_0_x[self.num_of_laps+1:], self.time_list_0_y[self.num_of_laps+1:], pen=(2,3))
+                if (self.lap_no_0 == 0):
+                    self.ui.graphicsView.plot(self.time_list_0_x[self.num_of_laps+1:], self.time_list_0_y[self.num_of_laps+1:], pen='k')
+                else:
+                    self.ui.graphicsView.plot(self.time_list_0_x[self.num_of_laps+2:], self.time_list_0_y[self.num_of_laps+2:], pen=(2,3))
             self.ui.progressBar.setValue(100*self.lap_no_0/self.num_of_laps)
             self.new_time_0_avail = False
         
@@ -195,7 +198,10 @@ class MyDialog(QtGui.QDialog):
             if not self.track_swapped:
                 self.ui.graphicsView_2.plot(self.time_list_1_x, self.time_list_1_y, pen=(2,3))
             if self.track_swapped:
-                self.ui.graphicsView_2.plot(self.time_list_1_x[self.num_of_laps+1:], self.time_list_1_y[self.num_of_laps +1:], pen=(1,3))
+                if (self.lap_no_1 == 0):
+                    self.ui.graphicsView_2.plot(self.time_list_1_x[self.num_of_laps+1:], self.time_list_1_y[self.num_of_laps+1:], pen='k')
+                else:
+                    self.ui.graphicsView_2.plot(self.time_list_1_x[self.num_of_laps+2:], self.time_list_1_y[self.num_of_laps +2:], pen=(1,3))
             self.ui.progressBar_2.setValue(100*self.lap_no_1/self.num_of_laps)
             self.new_time_1_avail = False
 
